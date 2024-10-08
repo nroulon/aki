@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aki"
-version = "0.10.6"
+version = "0.10.7-rc1"
 description = ""
 authors = ["nroulon <nicolas.roulon@4sh.fr>"]
 
