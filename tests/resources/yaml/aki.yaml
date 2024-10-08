@@ -14,6 +14,8 @@ aki:
       prefix: aki_test_postgres_
       exclude:
         - share
+      container_name_dependencies:
+        - aki_test_elastic
   use:
     not_found:
       - volume_name: dev-.*

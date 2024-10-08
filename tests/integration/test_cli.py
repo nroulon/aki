@@ -27,6 +27,7 @@ extra_to_remove = ['test_cp']
 
 postgres_container_id = 'aki_test_postgres'
 mongo_container_id = 'aki_test_mongo'
+elastic_container_id = 'aki_test_elastic'
 
 postgres_prefix = 'aki_test_postgres_'
 mongo_prefix = docker_compose_folder / 'mongo'
@@ -196,6 +197,8 @@ def test_ls_long_pattern():
 
 
 def test_use():
+    elastic_id = _get_elastic_container_id()
+
     exit_code, out = _run_cli('use', 'test')
     _assert_process_code(exit_code)
 
@@ -203,12 +206,14 @@ def test_use():
                                  Use volume test
                                  Writing {project_folder}/tests/resources/yaml/.env
                                  Removing container aki_test_mongo
+                                 Removing container aki_test_elastic because it depends on aki_test_postgres
                                  Removing container aki_test_postgres
                                  Restarting containers
                                  {colorize_in_green("Containers started")}''')
 
     assert mongo_prefix / 'test' == _get_mongo_current_volume_path()
     assert f'{postgres_prefix}test' == _get_postgres_current_volume_name()
+    assert elastic_id != _get_elastic_container_id()
 
 
 def test_use_one():
@@ -226,15 +231,18 @@ def test_use_one():
 
 
 def test_cp():
+    elastic_id = _get_elastic_container_id()
+
     exit_code, out = _run_cli('cp', 'test', 'test_cp', stdin=StringIO('y'))
     _assert_process_code(exit_code)
 
     _assert_process_out(out, f'''
-                                 Stopping aki_test_mongo
+                                 Removing container aki_test_mongo
                                  Copying {mongo_folder}/test to {mongo_folder}/test_cp
                                  \x1b[32mCopy done\x1b[0m
                                     
-                                 Stopping aki_test_postgres
+                                 Removing container aki_test_elastic because it depends on aki_test_postgres
+                                 Removing container aki_test_postgres
                                  Copying volume aki_test_postgres_test to aki_test_postgres_test_cp
                                  \x1b[32mCopy done\x1b[0m
                                     
@@ -242,12 +250,14 @@ def test_cp():
                                  Use volume test_cp
                                  Writing {env_file}
                                  Removing container aki_test_mongo
+                                 Removing container aki_test_elastic because it depends on aki_test_postgres
                                  Removing container aki_test_postgres
                                  Restarting containers
                                  \x1b[32mContainers started\x1b[0m''')
 
     assert mongo_prefix / 'test_cp' == _get_mongo_current_volume_path()
     assert f'{postgres_prefix}test_cp' == _get_postgres_current_volume_name()
+    assert elastic_id != _get_elastic_container_id()
 
 
 def test_cp_one():
@@ -255,7 +265,7 @@ def test_cp_one():
     _assert_process_code(exit_code)
 
     _assert_process_out(out, f'''
-                                     Stopping aki_test_mongo
+                                     Removing container aki_test_mongo
                                      Copying {mongo_folder}/test to {mongo_folder}/test_cp
                                      \x1b[32mCopy done\x1b[0m
                                         
@@ -275,11 +285,12 @@ def test_cp_no_switch():
     _assert_process_code(exit_code)
 
     _assert_process_out(out, f'''
-                                 Stopping aki_test_mongo
+                                 Removing container aki_test_mongo
                                  Copying {mongo_folder}/test to {mongo_folder}/test_cp
                                  \x1b[32mCopy done\x1b[0m
                                     
-                                 Stopping aki_test_postgres
+                                 Removing container aki_test_elastic because it depends on aki_test_postgres
+                                 Removing container aki_test_postgres
                                  Copying volume aki_test_postgres_test to aki_test_postgres_test_cp
                                  \x1b[32mCopy done\x1b[0m
                                     
@@ -296,14 +307,15 @@ def test_cp_override():
     _assert_process_code(exit_code)
 
     _assert_process_out(out, f'''
-                                 Stopping aki_test_mongo
+                                 Removing container aki_test_mongo
                                  Volume dev for mongo already exist, override it ? [Y/n]
                                  Remove volume dev
                                  Removing {mongo_folder}/dev
                                  Copying {mongo_folder}/test to {mongo_folder}/dev
                                  \x1b[32mCopy done\x1b[0m
                                  
-                                 Stopping aki_test_postgres
+                                 Removing container aki_test_elastic because it depends on aki_test_postgres
+                                 Removing container aki_test_postgres
                                  Volume dev for postgres already exist, override it ? [Y/n]
                                  Remove volume dev
                                  Removing aki_test_postgres_dev
@@ -314,6 +326,7 @@ def test_cp_override():
                                  Use volume dev
                                  Writing {env_file}
                                  Removing container aki_test_mongo
+                                 Removing container aki_test_elastic because it depends on aki_test_postgres
                                  Removing container aki_test_postgres
                                  Restarting containers
                                  \x1b[32mContainers started\x1b[0m''')
@@ -327,14 +340,16 @@ def test_cp_no_override():
     exit_code, out = _run_cli('cp', 'test', 'dev', stdin=stdin)
     _assert_process_code(exit_code)
     _assert_process_out(out, f'''
-                                 Stopping aki_test_mongo
+                                 Removing container aki_test_mongo
                                  Volume dev for mongo already exist, override it ? [Y/n]
-                                 Stopping aki_test_postgres
+                                 Removing container aki_test_elastic because it depends on aki_test_postgres
+                                 Removing container aki_test_postgres
                                  Volume dev for postgres already exist, override it ? [Y/n]
                                  Switch to volume dev ? [Y/n]
                                  Use volume dev
                                  Writing {env_file}
                                  Removing container aki_test_mongo
+                                 Removing container aki_test_elastic because it depends on aki_test_postgres
                                  Removing container aki_test_postgres
                                  Restarting containers
                                  \x1b[32mContainers started\x1b[0m''')
@@ -603,3 +618,7 @@ def _get_mongo_current_volume_path():
         source = volume.get('Source')
         if str(mongo_prefix) in source:
             return Path(source)
+
+
+def _get_elastic_container_id():
+    return docker_client.containers.get(elastic_container_id).id

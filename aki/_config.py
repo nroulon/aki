@@ -36,6 +36,7 @@ KEY_VOLUMES = ConfigKey('volumes', KEY_AKI.path)
 KEY_VOLUME_TYPE = ConfigKey('type', KEY_VOLUMES.path)
 KEY_VOLUME_ENV = ConfigKey('env', KEY_VOLUMES.path)
 KEY_VOLUME_CONTAINER = ConfigKey('container_name', KEY_VOLUMES.path)
+KEY_VOLUME_CONTAINER_NAME_DEPENDENCIES = ConfigKey('container_name_dependencies', KEY_VOLUMES.path)
 KEY_VOLUME_FOLDER = ConfigKey('folder', KEY_VOLUMES.path)
 KEY_VOLUME_EXCLUDE = ConfigKey('exclude', KEY_VOLUMES.path)
 KEY_VOLUME_PREFIX = ConfigKey('prefix', KEY_VOLUMES.path)
@@ -98,24 +99,25 @@ def _get_volumes_from_config(base_path, config, docker_client):
 def _get_volume_common_config(volume: Dict):
     env_variable = dict_parse_utils.get_str(KEY_VOLUME_ENV, volume)
     container_name = dict_parse_utils.get_str(KEY_VOLUME_CONTAINER, volume)
+    container_name_dependencies = dict_parse_utils.get_list(KEY_VOLUME_CONTAINER_NAME_DEPENDENCIES, volume, mandatory=False)
 
-    return env_variable, container_name
+    return env_variable, container_name, container_name_dependencies
 
 
 def _create_host_volume_from_config(volume: Dict, docker_client, base_path: Path):
-    env_variable, container_name = _get_volume_common_config(volume)
+    env_variable, container_name, container_name_dependencies = _get_volume_common_config(volume)
     folder = dict_parse_utils.get_path(base_path, KEY_VOLUME_FOLDER, volume)
     exclude = dict_parse_utils.get_list(KEY_VOLUME_EXCLUDE, volume, mandatory=False)
 
-    return AkiHostVolume(docker_client, container_name, env_variable, folder, exclude)
+    return AkiHostVolume(docker_client, container_name, env_variable, container_name_dependencies, folder, exclude)
 
 
 def _create_docker_volume_from_config(volume: Dict, docker_client):
-    env_variable, container_name = _get_volume_common_config(volume)
+    env_variable, container_name, container_name_dependencies = _get_volume_common_config(volume)
     prefix = dict_parse_utils.get_str(KEY_VOLUME_PREFIX, volume)
     exclude = dict_parse_utils.get_list(KEY_VOLUME_EXCLUDE, volume, mandatory=False)
 
-    return AkiDockerVolume(docker_client, container_name, env_variable, prefix, exclude)
+    return AkiDockerVolume(docker_client, container_name, env_variable, container_name_dependencies, prefix, exclude)
 
 
 def _fetch_default_docker_compose(base_path: Path):

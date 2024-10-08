@@ -321,13 +321,7 @@ def use_volume(aki_volume_by_type: Dict[str, AkiVolume], aki_name_to_use: str):
             file.write(f'{key}={value}\n')
 
     for _, aki_volume in aki_volume_by_type.items():
-        print_info(f'Removing container {aki_volume.container_name}')
-        try:
-            container = config.docker_client.containers.get(aki_volume.container_name)
-            container.stop()
-            container.remove()
-        except DockerException:
-            pass
+        aki_volume.remove_container_and_dependencies()
 
     _docker_compose_up()
     print_success(f'Containers started')
@@ -375,12 +369,7 @@ def copy_volume(aki_volume_by_type: Dict[str, AkiVolume], source: str, destinati
             continue
 
         # Stop and remove container because it can mess up copy
-        print_info(f'Stopping {aki_volume.container_name}')
-        try:
-            config.docker_client.containers.get(aki_volume.container_name).stop()
-            config.docker_client.containers.get(aki_volume.container_name).remove()
-        except DockerException:
-            pass
+        aki_volume.remove_container_and_dependencies()
 
         # Check destination exist
         destination_volume: Volume = next(filter(lambda v: v.aki_name == destination, volumes_by_types[volume_type]), None)

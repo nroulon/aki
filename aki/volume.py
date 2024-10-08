@@ -31,6 +31,8 @@ class AkiVolume(metaclass=abc.ABCMeta):
     docker_client: DockerClient = field(repr=False)
     container_name: str
     env_variable: str
+    container_name_dependencies: List[str]
+
 
     @abc.abstractmethod
     def volume_name_to_volume(self, volume_name: str, is_aki_name: bool = False) -> Volume:
@@ -70,6 +72,22 @@ class AkiVolume(metaclass=abc.ABCMeta):
             return self.docker_client.containers.get(self.container_name).status == 'running'
         except docker.errors.NotFound:
             return False
+
+    def remove_container_and_dependencies(self):
+        for container_name in self.container_name_dependencies:
+            print_info(f'Removing container {container_name} because it depends on {self.container_name}')
+            try:
+                self.docker_client.containers.get(container_name).stop()
+                self.docker_client.containers.get(container_name).remove()
+            except DockerException:
+                pass
+
+        print_info(f'Removing container {self.container_name}')
+        try:
+            self.docker_client.containers.get(self.container_name).stop()
+            self.docker_client.containers.get(self.container_name).remove()
+        except DockerException:
+            pass
 
     @staticmethod
     def is_volume_match_pattern(volume: Volume, regex_pattern: str, reverse_match: bool) -> bool:

@@ -15,6 +15,9 @@ services:
     volumes:
       - postgres_volume:/var/lib/postgresql/data
       - ./postgres/test:/tmp/test
+  elastic:
+    image: docker.io/bitnami/elasticsearch
+    container_name: aki_test_elastic
 
 volumes:
   postgres_volume:
