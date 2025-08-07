@@ -10,8 +10,8 @@ sed -i'.bak' -e "s@^pipx install .*@pipx install https://github.com/nroulon/nrou
 sed -i'.bak' -e "s@^version = .*@version = \"$version\"@" "pyproject.toml"
 rm README.md.bak pyproject.toml.bak
 
-echo "poetry build"
-poetry blixbuild
+echo "uv build --wheel"
+uv build --wheel
 
 echo "commit and tag"
 git commit --all --message "release $version"
