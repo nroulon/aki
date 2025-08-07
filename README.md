@@ -26,7 +26,7 @@ A python package is also available, aki is compatible and tested with Python 3.8
 
 You can install aki with [pipx](https://pipx.pypa.io/):
 ```
-pipx install https://github.com/nroulon/aki/releases/download/v0.10.7-rc1/aki-0.10.7rc1-py3-none-any.whl
+pipx install https://github.com/nroulon/nroulon/releases/download/vv0.10.7-rc3/aki-v0.10.7-rc3-py3-none-any.whl
 ```
 
 ### Docker or Python ?

@@ -5,7 +5,7 @@ script_directory="$(cd "$(dirname "$(readlink -f ${BASH_SOURCE[0]})")" &> /dev/n
 version="$1"
 
 echo "change version in files"
-echo "__version__ = '$version'" > "$script_directory/aki/version.py"
+echo "__version__ = '$version'" > "$script_directory/src/aki/version.py"
 sed -i'.bak' -e "s@^pipx install .*@pipx install https://github.com/nroulon/nroulon/releases/download/v$version/aki-$version-py3-none-any.whl@" "README.md"
 sed -i'.bak' -e "s@^version = .*@version = \"$version\"@" "pyproject.toml"
 rm README.md.bak pyproject.toml.bak
