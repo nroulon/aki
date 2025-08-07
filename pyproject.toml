@@ -1,6 +1,6 @@
 [project]
 name = "aki"
-version = "v0.10.7-rc3"
+version = "0.10.7-rc3"
 readme = "README.md"
 authors = [
     { name = "nroulon", email = "nicolas.roulon@4sh.fr" }
