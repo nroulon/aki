@@ -31,5 +31,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/4sh/aki:latest
-            ghcr.io/4sh/aki:${{ github.ref_name }}
+            ghcr.io/nroulon/aki:latest
+            ghcr.io/nroulon/aki:${{ github.ref_name }}

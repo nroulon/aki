@@ -8,7 +8,7 @@ modifying docker compose variable for switch volume.
 
 ## Installation
 ### Docker
-An image `ghcr.io/4sh/aki:latest` is available.
+An image `ghcr.io/nroulon/aki:latest` is available.
 
 The only requirement is access to your docker daemon, for that you need to mount `/var/run/docker.sock` in the
 container. You also need to mount the docker-compose folder with the same path as your system,
@@ -18,7 +18,7 @@ the container.
 ```
 docker run --rm --interactive \
     --volume /var/run/docker.sock:/var/run/docker.sock \
-    --volume /path/to/aki:/path/to/aki ghcr.io/4sh/aki:latest
+    --volume /path/to/aki:/path/to/aki ghcr.io/nroulon/aki:latest
 ```
 
 ### Python
@@ -26,7 +26,7 @@ A python package is also available, aki is compatible and tested with Python 3.8
 
 You can install aki with [pipx](https://pipx.pypa.io/):
 ```
-pipx install https://github.com/4sh/aki/releases/download/v0.10.7-rc1/aki-0.10.7rc1-py3-none-any.whl
+pipx install https://github.com/nroulon/aki/releases/download/v0.10.7-rc1/aki-0.10.7rc1-py3-none-any.whl
 ```
 
 ### Docker or Python ?

@@ -11,5 +11,5 @@ else
   docker run --rm --interactive \
         --volume /var/run/docker.sock:/var/run/docker.sock \
         --volume "$script_directory":"$script_directory" \
-        ghcr.io/4sh/aki --file "$script_directory/$aki_config_filename" "$@"
+        ghcr.io/nroulon/aki --file "$script_directory/$aki_config_filename" "$@"
 fi
