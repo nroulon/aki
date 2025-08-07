@@ -24,7 +24,14 @@ docker run --rm --interactive \
 ### Python
 A python package is also available, aki is compatible and tested with Python 3.8, 3.9, 3.10, 3.11 and 3.12.
 
-You can install aki with [pipx](https://pipx.pypa.io/):
+You can install aki with python tools :
+
+[uv](https://docs.astral.sh/uv/):
+```
+uv tool install https://github.com/nroulon/nroulon/releases/download/v0.10.7-rc3/aki-0.10.7-rc3-py3-none-any.whl
+```
+
+[pipx](https://pipx.pypa.io/):
 ```
 pipx install https://github.com/nroulon/nroulon/releases/download/v0.10.7-rc3/aki-0.10.7-rc3-py3-none-any.whl
 ```
