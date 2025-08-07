@@ -158,8 +158,8 @@ class AkiDockerVolume(AkiVolume):
         print_verbose(f'{self.container_name} - docker copy {self.container_name}, {source=}, {destination=}')
         print_info(f'Copying volume {source.external_name} to {destination.external_name}')
 
-        self.docker_client.containers.run('busybox',
-                                          command='cp -a /source/ /destination',
+        self.docker_client.containers.run('instrumentisto/rsync-ssh',
+                                          command='rsync -aHAX --numeric-ids /source/. /destination',
                                           name=format_aki_container_name(f'cp_{self.container_name}'),
                                           volumes=[
                                               f'{source.external_name}:/source',
@@ -239,8 +239,8 @@ class AkiHostVolume(AkiVolume):
         print_info(f'Copying {source.external_name} to {destination.external_name}')
         if platform_info.is_linux():
             print_verbose('copy on linux - start a container')
-            self.docker_client.containers.run('busybox',
-                                              command='cp -a /source/. /destination',
+            self.docker_client.containers.run('instrumentisto/rsync-ssh',
+                                              command='rsync -aHAX --numeric-ids /source/. /destination',
                                               name=format_aki_container_name(f'cp_{self.container_name}'),
                                               volumes=[
                                                   f'{source.external_name}:/source',
