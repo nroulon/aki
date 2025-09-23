@@ -220,7 +220,7 @@ class AkiHostVolume(AkiVolume):
             for volume in filter(lambda v: v.get('Type') == 'bind', volumes):
                 volume_path = volume.get('Source')
 
-                if parent_folder in volume_path and volume_path not in exclude_str_path:
+                if parent_folder in volume_path and Path(volume_path).parent == self.parent_folder and volume_path not in exclude_str_path:
                     print_verbose(f'{self.container_name} - current_volume={volume_path}')
                     return self.volume_name_to_volume(volume_path)
         except DockerException as e:
