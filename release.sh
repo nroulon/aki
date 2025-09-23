@@ -10,13 +10,20 @@ sed -i'.bak' -e "s@^pipx install .*@pipx install https://github.com/nroulon/nrou
 sed -i'.bak' -e "s@^uv tool install .*@uv tool install https://github.com/nroulon/nroulon/releases/download/v$version/aki-$version-py3-none-any.whl@" "README.md"
 sed -i'.bak' -e "s@^version = .*@version = \"$version\"@" "pyproject.toml"
 rm README.md.bak pyproject.toml.bak
+echo
+
+echo "uv sync"
+uv sync
+echo
 
 echo "uv build --wheel"
 uv build --wheel
+echo
 
 echo "commit and tag"
 git commit --all --message "release $version"
 git tag "v$version"
+echo
 
 echo "upload $script_directory/dist/aki-$version-py3-none-any.whl to a new release $version on https://github.com/nroulon/aki/releases"
 echo "push for publish version and docker package : git push && git push --tags"

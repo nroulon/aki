@@ -28,12 +28,12 @@ You can install aki with python tools :
 
 [uv](https://docs.astral.sh/uv/):
 ```
-uv tool install https://github.com/nroulon/nroulon/releases/download/v0.10.7-rc3/aki-0.10.7-rc3-py3-none-any.whl
+uv tool install https://github.com/nroulon/nroulon/releases/download/v0.10.7-rc4/aki-0.10.7-rc4-py3-none-any.whl
 ```
 
 [pipx](https://pipx.pypa.io/):
 ```
-pipx install https://github.com/nroulon/nroulon/releases/download/v0.10.7-rc3/aki-0.10.7-rc3-py3-none-any.whl
+pipx install https://github.com/nroulon/nroulon/releases/download/v0.10.7-rc4/aki-0.10.7-rc4-py3-none-any.whl
 ```
 
 ### Docker or Python ?

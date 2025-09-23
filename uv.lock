@@ -4,7 +4,7 @@ requires-python = ">=3.9"
 
 [[package]]
 name = "aki"
-version = "0.10.7rc2"
+version = "0.10.7rc4"
 source = { editable = "." }
 dependencies = [
     { name = "docker" },
